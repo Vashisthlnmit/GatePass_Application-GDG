@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model StudentProfile {
+  id             Int      @id @default(autoincrement())
+  Name           String?
+  Email          String?
+  Mobileno       String?
+  ParentMobileno BigInt?
+  HostelName     Hostel   @relation(fields: [hostelId], references: [id])
+  hostelId       Int
+  Outpass        Outpass?
+}
+
+model HostelAdmins {
+  id       Int     @id @default(autoincrement())
+  Name     String?
+  Email    String?
+  Phoneno  BigInt?
+  Role     String?
+  HostelId Hostel  @relation(fields: [id], references: [id])
+}
+
+model Hostel {
+  id             Int              @id @default(autoincrement())
+  HostelName     String?
+  CareTaker      String?
+  Accomodation   String?
+  Assistant      String?
+  SuperIntendent String?
+  HostelSupport  String?
+  StudentProfile StudentProfile[]
+  HostelAdmins   HostelAdmins[]
+}
+
+model Outpass {
+  id            Int            @id @default(autoincrement())
+  Transport     String?
+  Reason        String?
+  RequestDate   DateTime?
+  RequestTime   DateTime?
+  ReturnDate    DateTime?
+  ReturnTime    DateTime?
+  studentId     Int            @unique
+  StudentRollno StudentProfile @relation(fields: [studentId], references: [id])
+}
